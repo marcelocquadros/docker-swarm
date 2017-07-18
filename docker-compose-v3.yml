@@ -1,0 +1,39 @@
+version: "3"
+services:
+  mysql:
+    image: mysql
+    networks:
+      - interna
+    environment:
+      - MYSQL_ROOT_PASSWORD=senha
+      - MYSQL_DATABASE=wordpress
+    volumes:
+      - ./data:/var/lib/mysql
+  wordpress:
+    image: wordpress
+    ports:
+      - 80:80
+    networks:
+      - interna
+    depends_on:
+      - mysql
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      - WORDPRESS_DB_HOST=mysql:3306
+      - WORDPRESS_DB_PASSWORD=senha
+      - WORDPRESS_DB_USER=root
+  visualizer:
+      image: dockersamples/visualizer:stable
+      ports:
+        - "8080:8080"
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+      deploy:
+        placement:
+          constraints: [node.role == manager]
+      networks:
+        - interna
+networks:
+    interna:
