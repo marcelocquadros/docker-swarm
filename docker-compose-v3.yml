@@ -17,9 +17,6 @@ services:
       - interna
     depends_on:
       - mysql
-    deploy:
-      mode: replicated
-      replicas: 1
     environment:
       - WORDPRESS_DB_HOST=mysql:3306
       - WORDPRESS_DB_PASSWORD=senha
